@@ -1,5 +1,4 @@
 import os
-
 os.environ['TCL_LIBRARY'] = r"C:\Users\panda\AppData\Local\Programs\Python\Python313\tcl\tcl8.6"
 
 import os
@@ -22,10 +21,26 @@ def cargar_tabla_simbolos():
 tabla_simbolos = cargar_tabla_simbolos()
 
 # Extraer listas de palabras reservadas, operadores y símbolos de puntuación
-palabras_reservadas = [item["token"] for item in tabla_simbolos["palabras_reservadas"]]
-operadores = tabla_simbolos["operadores_aritmeticos"] + tabla_simbolos["operadores_asignacion"] + tabla_simbolos[
-    "operadores_comparacion"]
-simbolos_puntuacion = tabla_simbolos["simbolos_puntuacion"]
+palabras_reservadas = set(item["token"] for item in tabla_simbolos["palabras_reservadas"])
+operadores = set(tabla_simbolos["operadores_aritmeticos"] + tabla_simbolos["operadores_asignacion"] + tabla_simbolos[
+    "operadores_comparacion"])
+simbolos_puntuacion = set(tabla_simbolos["simbolos_puntuacion"])
+
+
+# Definir el AFD para identificar tokens
+def afd_reconocer_token(token):
+    if token in palabras_reservadas:
+        return "PALABRA_RESERVADA"
+    elif token in operadores:
+        return "OPERADOR"
+    elif token in simbolos_puntuacion:
+        return "SIMBOLO"
+    elif re.match(r'^[a-zA-Z_]\w*$', token):  # Identificador válido
+        return "IDENTIFICADOR"
+    elif re.match(r'^[0-9]+$', token):  # Números enteros
+        return "NUMERO"
+    else:
+        return "ERROR"
 
 
 # Función para resaltar palabras en el código
@@ -35,57 +50,46 @@ def resaltar_sintaxis(event=None):
     txt_codigo.tag_remove("simbolo", "1.0", tk.END)
 
     texto = txt_codigo.get("1.0", tk.END)
-    palabras = texto.split()
+    tokens = re.findall(r'[a-zA-Z_]\w*|\d+|[+\-*/=<>!&|;,.(){}\[\]]', texto)
 
-    index = "1.0"
-    for palabra in palabras:
-        inicio = txt_codigo.search(palabra, index, stopindex=tk.END)
-        if inicio:
-            fin = f"{inicio}+{len(palabra)}c"
-            if palabra in palabras_reservadas:
-                txt_codigo.tag_add("reservada", inicio, fin)
-            elif palabra in operadores:
-                txt_codigo.tag_add("operador", inicio, fin)
-            elif palabra in simbolos_puntuacion:
-                txt_codigo.tag_add("simbolo", inicio, fin)
-            index = fin
-
-
-# Función para cargar un archivo de texto en el área de código
-def cargar_archivo(text_widget):
-    filename = filedialog.askopenfilename(filetypes=[("Archivos de texto", "*.txt"), ("Todos los archivos", "*.*")])
-    if filename:
-        with open(filename, "r", encoding="utf-8") as f:
-            contenido = f.read()
-            text_widget.delete("1.0", tk.END)
-            text_widget.insert(tk.END, contenido)
-        resaltar_sintaxis()
+    for token in tokens:
+        index = txt_codigo.search(token, "1.0", stopindex=tk.END)
+        if index:
+            fin = f"{index}+{len(token)}c"
+            tipo = afd_reconocer_token(token)
+            if tipo == "PALABRA_RESERVADA":
+                txt_codigo.tag_add("reservada", index, fin)
+            elif tipo == "OPERADOR":
+                txt_codigo.tag_add("operador", index, fin)
+            elif tipo == "SIMBOLO":
+                txt_codigo.tag_add("simbolo", index, fin)
 
 
-# Función de compilación que tokeniza y muestra errores
+# Función de compilación que tokeniza y usa el AFD para clasificar tokens
 def compilar(text_widget):
     txt_errores.config(state="normal")
     txt_errores.delete("1.0", tk.END)
 
     codigo = text_widget.get("1.0", tk.END)
-    tokens = codigo.split()
+    tokens = re.findall(r'[a-zA-Z_]\w*|\d+|[+\-*/=<>!&|;,.(){}\[\]]', codigo)
     errores = []
+    reconocidos = []
 
     for token in tokens:
-        if token in palabras_reservadas or token in operadores or token in simbolos_puntuacion:
-            continue
-        elif re.match(r'^[a-zA-Z_]\w*$', token):  # identificador válido
-            continue
-        elif token.isdigit():  # números
-            continue
-        else:
+        tipo = afd_reconocer_token(token)
+        if tipo == "ERROR":
             errores.append(f"Token desconocido: {token}")
+        else:
+            reconocidos.append(f"{tipo}: {token}")
 
     if errores:
         for error in errores:
             txt_errores.insert(tk.END, error + "\n")
     else:
-        txt_errores.insert(tk.END, "Compilación exitosa")
+        txt_errores.insert(tk.END, "Compilación exitosa\n")
+
+    if reconocidos:
+        txt_errores.insert(tk.END, "Tokens reconocidos:\n" + "\n".join(reconocidos) + "\n")
 
     txt_errores.config(state="disabled")
 
