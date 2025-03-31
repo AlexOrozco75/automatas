@@ -1,0 +1,25 @@
+{
+    "palabras_reservadas": [
+        { "token": "AgarraElError", "original": "catch" },
+        { "token": "VerdaderoOFalso", "original": "boolean" },
+        { "token": "switch", "original": "switch" },
+        { "token": "Opcion", "original": "case" },
+        { "token": "Letra", "original": "char" },
+        { "token": "Clase", "original": "class" },
+        { "token": "Mientras", "original": "while" },
+        { "token": "DoMientras", "original": "do while" },
+        { "token": "Cuatro", "original": "for" },
+        { "token": "PreguntaExistencial", "original": "if" },
+        { "token": "PuesSiNo", "original": "else" },
+        { "token": "Flotante", "original": "float" },
+        { "token": "ChicoEntero", "original": "int" },
+        { "token": "doble", "original": "double" }
+    ],
+    "operadores_aritmeticos": ["+", "-", "*", "/", "%", "++", "--"],
+    "operadores_asignacion": ["=", "+=", "-=", "*=", "/=", "%="],
+    "operadores_comparacion": ["==", "!=", ">", "<", ">=", "<="],
+    "simbolos_puntuacion": ["{", "}", "(", ")", "[", "]", ";", ",", ".", "@"],
+    "comentarios": ["//", "/* /", "/* */"],
+    "numeros": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+    "identificadores": "Palabras que solo contienen letras minúsculas y empiezan con '_', ejemplo: '_variable1'"
+}

@@ -1,0 +1,40 @@
+Simbolos
+
+Operadores Aritmeticos
++, -, *, /, %, ++, --
+
+Operadores de Asignación
+=, +=, -=, *=, /=, %=
+
+Operadores de Comparación
+==, !=, >, <, >=, <=
+
+Símbolos de Puntuación
+{}, (), [], ;, ,, ., @
+
+Comentarios
+//, /* /, /* */
+
+Numeros
+1,2,3,4,5,6,7,8,9
+
+Identificadores
+Cualquier palabra que solo contencta letras en minuscula y empueze con "_" ejemplo "_variable1", "_variable2".
+
+
+Palabras reservadas
+
+catch -> AgarraElError
+boolean -> VerdaderoOFalso
+switch -> 
+case -> Opcion
+char -> Letra
+class -> Clase
+while -> Mientras
+do while -> DoMientras
+for -> Cuatro
+if -> PreguntaExistencial
+else -> PuesSiNo
+float -> Flotante
+int -> ChicoEntero
+double -> doble
