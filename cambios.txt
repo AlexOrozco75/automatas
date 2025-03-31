@@ -1,0 +1,16 @@
+Para completar la presente práctica, el alumno junto con otro compañero deberán realizar una interfaz de usuario que tenga las siguientes capacidades:
+
+    1- Permitir escribir el código fuente del lenguaje de programación que usted y su compañero definirán en próximas entregas
+    2- Conforme vaya escribiendo código las palabras reservadas deben cambiar de color, este lo define el equipo
+    3- Agregar un menú a la interfaz para que permita cargar un archivo de texto con código de su lenguaje desde su computadora
+    4- Crear una archivo de acceso aleatorio y asignarle el nombre de "Tabla de símbolos"
+    5- Defina algunas palabras reservadas de su lenguaje y cargarlas de manera secuencial a la "Tabla de símbolos"
+    6- Separe todo su código en "tokens"
+    7- Genere un AFD para reconocer identificadores y aquellos tokens que sean reconocidos por el AFD agréguelos a la tabla de símbolos de forma secuencial (defina las reglas e inclúyalas en su reporte)
+    8- Genere un AFD para que reconozca dígitos (entero y decimal), la cadena que sea reconocida por este autómata deberá ser agregada a la tabla de símbolos de forma secuencial.
+    9- Agregue un espacio en la interfaz donde pueda reportar errores durante el proceso de compilación
+    10- Agregue un botón que permita compilar y realice los pasos 5, 6, 7 y reporte los errores en la sección del paso 8
+
+    31/03/2025
+
+    No se debe de poder editar texto en la zona donde se muestran errores.
