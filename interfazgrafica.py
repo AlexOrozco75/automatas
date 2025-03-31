@@ -1,3 +1,8 @@
+
+import os
+os.environ['TCL_LIBRARY'] = r"C:\Users\panda\AppData\Local\Programs\Python\Python313\tcl\tcl8.6"
+
+
 import os
 import json
 import tkinter as tk
