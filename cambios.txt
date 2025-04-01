@@ -14,3 +14,6 @@ Para completar la presente práctica, el alumno junto con otro compañero deber�
     31/03/2025
 
     No se debe de poder editar texto en la zona donde se muestran errores.
+
+
+
