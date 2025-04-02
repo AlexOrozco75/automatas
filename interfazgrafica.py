@@ -11,21 +11,17 @@ import re
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_PATH = os.path.join(BASE_DIR, "tabla_contenidos.json")
 
-
 # Cargar el archivo JSON con los tokens desde la ruta general
 def cargar_tabla_simbolos():
     with open(JSON_PATH, "r", encoding="utf-8") as archivo:
         return json.load(archivo)
 
-
 tabla_simbolos = cargar_tabla_simbolos()
 
 # Extraer listas de palabras reservadas, operadores y símbolos de puntuación
 palabras_reservadas = set(item["token"] for item in tabla_simbolos["palabras_reservadas"])
-operadores = set(tabla_simbolos["operadores_aritmeticos"] + tabla_simbolos["operadores_asignacion"] + tabla_simbolos[
-    "operadores_comparacion"])
+operadores = set(tabla_simbolos["operadores_aritmeticos"] + tabla_simbolos["operadores_asignacion"] + tabla_simbolos["operadores_comparacion"])
 simbolos_puntuacion = set(tabla_simbolos["simbolos_puntuacion"])
-
 
 # Definir el AFD para identificar tokens
 def afd_reconocer_token(token):
@@ -41,7 +37,6 @@ def afd_reconocer_token(token):
         return "NUMERO"
     else:
         return "ERROR"
-
 
 # Función para resaltar palabras en el código
 def resaltar_sintaxis(event=None):
@@ -63,7 +58,6 @@ def resaltar_sintaxis(event=None):
                 txt_codigo.tag_add("operador", index, fin)
             elif tipo == "SIMBOLO":
                 txt_codigo.tag_add("simbolo", index, fin)
-
 
 # Función de compilación que tokeniza y usa el AFD para clasificar tokens
 def compilar(text_widget):
@@ -93,6 +87,18 @@ def compilar(text_widget):
 
     txt_errores.config(state="disabled")
 
+# Función para cargar archivos en el widget de código
+def cargar_archivo(text_widget):
+    file_path = filedialog.askopenfilename(
+        title="Selecciona un archivo",
+        filetypes=[("Archivos de texto", "*.txt"), ("Todos los archivos", "*.*")]
+    )
+    if file_path:
+        with open(file_path, "r", encoding="utf-8") as archivo:
+            contenido = archivo.read()
+        text_widget.delete("1.0", tk.END)
+        text_widget.insert(tk.END, contenido)
+        resaltar_sintaxis()
 
 # Configuración de la ventana principal
 root = tk.Tk()

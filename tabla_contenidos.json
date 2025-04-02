@@ -1,25 +1,56 @@
 {
-    "palabras_reservadas": [
-        { "token": "AgarraElError", "original": "catch" },
-        { "token": "VerdaderoOFalso", "original": "boolean" },
-        { "token": "switch", "original": "switch" },
-        { "token": "Opcion", "original": "case" },
-        { "token": "Letra", "original": "char" },
-        { "token": "Clase", "original": "class" },
-        { "token": "Mientras", "original": "while" },
-        { "token": "DoMientras", "original": "do while" },
-        { "token": "Cuatro", "original": "for" },
-        { "token": "PreguntaExistencial", "original": "if" },
-        { "token": "PuesSiNo", "original": "else" },
-        { "token": "Flotante", "original": "float" },
-        { "token": "ChicoEntero", "original": "int" },
-        { "token": "doble", "original": "double" }
-    ],
-    "operadores_aritmeticos": ["+", "-", "*", "/", "%", "++", "--"],
-    "operadores_asignacion": ["=", "+=", "-=", "*=", "/=", "%="],
-    "operadores_comparacion": ["==", "!=", ">", "<", ">=", "<="],
-    "simbolos_puntuacion": ["{", "}", "(", ")", "[", "]", ";", ",", ".", "@"],
-    "comentarios": ["//", "/* /", "/* */"],
-    "numeros": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-    "identificadores": "Palabras que solo contienen letras minúsculas y empiezan con '_', ejemplo: '_variable1'"
+  "palabras_reservadas": [
+    { "token": "inicio", "original": "inicio" },
+    { "token": "fin", "original": "fin" },
+    { "token": "var", "original": "var" },
+    { "token": "ChicoEntero", "original": "int" },
+    { "token": "Flotante", "original": "float" },
+    { "token": "doble", "original": "double" },
+    { "token": "VerdaderoOFalso", "original": "boolean" },
+    { "token": "string", "original": "string" },
+    { "token": "Letra", "original": "char" },
+    { "token": "PreguntaExistencial", "original": "if" },
+    { "token": "PuesSiNo", "original": "else" },
+    { "token": "Mientras", "original": "while" },
+    { "token": "mientras", "original": "while" },
+    { "token": "Cuatro", "original": "for" },
+    { "token": "DoMientras", "original": "do while" },
+    { "token": "intenta", "original": "try" },
+    { "token": "AgarraElError", "original": "catch" },
+    { "token": "switch", "original": "switch" },
+    { "token": "Opcion", "original": "case" },
+    { "token": "default", "original": "default" },
+    { "token": "Clase", "original": "class" }
+  ],
+  "operadores_aritmeticos": [
+    "+",
+    "-",
+    "*",
+    "/"
+  ],
+  "operadores_asignacion": [
+    "="
+  ],
+  "operadores_comparacion": [
+    "==",
+    "!=",
+    "<",
+    "<=",
+    ">",
+    ">="
+  ],
+  "operadores_logicos": [
+    "&&",
+    "||"
+  ],
+  "simbolos_puntuacion": [
+    ":",
+    ";",
+    "¿",
+    "?",
+    "[",
+    "]",
+    ",",
+    "\""
+  ]
 }
