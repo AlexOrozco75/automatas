@@ -31,7 +31,7 @@
 
 <para> ::= "Cuatro" [ <asignacion> <_expresion> ";" <asignacion> ] <bloque>
 
-<do_mientras> ::= "DoMientras" <bloque> "while" [ <_expresion> ] ";"
+<do_mientras> ::= "DoMientras" <bloque> "mientras" [ <_expresion> ] ";"
 
 <llamada_funcion> ::= <_identificador> [ < <lista_expresiones> > ] ";"
 <lista_expresiones> ::= <_expresion> ¿ "," <_expresion> ?
@@ -39,7 +39,7 @@
 <bloque> ::= "¿" <instrucciones> "?"
 <instrucciones> ::= ¿ <instruccion> ?
 
-<tratamiento_error> ::= "try" <bloque> "AgarraElError" [ <_identificador> ] <bloque>
+<tratamiento_error> ::= "intenta" <bloque> "AgarraElError" [ <_identificador> ] <bloque>
 
 <seleccion_multiple> ::= "switch" [ <_expresion> ] "¿" ¿ <caso> ? < <defecto> > "?"
 <caso> ::= "Opcion" <_valor> ":" <instrucciones>
