@@ -15,5 +15,4 @@ Para completar la presente práctica, el alumno junto con otro compañero deber�
 
     No se debe de poder editar texto en la zona donde se muestran errores.
 
-
-
+    Debe de poder reslizar decisiones, operacipones basicasa aritmeticas, comparaciones y ciclos como minimo.

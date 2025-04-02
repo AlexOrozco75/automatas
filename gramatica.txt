@@ -1,0 +1,78 @@
+<programa> ::= "inicio" <cuerpo> "fin"
+
+<cuerpo> ::= ¿ <declaracion>
+             | <instruccion>
+             | <declaracion_clase>
+             | <tratamiento_error>
+             | <seleccion_multiple>
+             | <para>
+             | <do_mientras> ?
+
+<declaracion> ::= "var" <_identificador> ":" <_tipo> ";"
+
+<_tipo> ::= "ChicoEntero"      (* corresponde a int *)
+         | "Flotante"         (* corresponde a float *)
+         | "doble"            (* corresponde a double *)
+         | "VerdaderoOFalso"  (* corresponde a boolean *)
+         | "string"
+         | "Letra"            (* corresponde a char *)
+
+<instruccion> ::= <asignacion>
+                | <decision>
+                | <ciclo>
+                | <llamada_funcion>
+                | <bloque>
+
+<asignacion> ::= <_identificador> "=" <_expresion> ";"
+
+<decision> ::= "PreguntaExistencial" [ <_expresion> ] <bloque> < "PuesSiNo" <bloque> >
+
+<ciclo> ::= "Mientras" [ <_expresion> ] <bloque>
+
+<para> ::= "Cuatro" [ <asignacion> <_expresion> ";" <asignacion> ] <bloque>
+
+<do_mientras> ::= "DoMientras" <bloque> "while" [ <_expresion> ] ";"
+
+<llamada_funcion> ::= <_identificador> [ < <lista_expresiones> > ] ";"
+<lista_expresiones> ::= <_expresion> ¿ "," <_expresion> ?
+
+<bloque> ::= "¿" <instrucciones> "?"
+<instrucciones> ::= ¿ <instruccion> ?
+
+<tratamiento_error> ::= "try" <bloque> "AgarraElError" [ <_identificador> ] <bloque>
+
+<seleccion_multiple> ::= "switch" [ <_expresion> ] "¿" ¿ <caso> ? < <defecto> > "?"
+<caso> ::= "Opcion" <_valor> ":" <instrucciones>
+<defecto> ::= "default" ":" <instrucciones>
+
+<declaracion_clase> ::= "Clase" <_identificador> "¿" <cuerpo_clase> "?"
+<cuerpo_clase> ::= ¿ <declaracion> | <instruccion> ?
+
+<_expresion> ::= <_expresion_logica>
+<_expresion_logica> ::= <_expresion_relacional> ¿ <_operador_logico> <_expresion_relacional> ?
+<_expresion_relacional> ::= <_expresion_aritmetica> < <_operador_relacional> <_expresion_aritmetica> >
+<_expresion_aritmetica> ::= <_termino> ¿ <_operador_aritmetico> <_termino> ?
+<_termino> ::= <_factor> ¿ [ "*" | "/" ] <_factor> ?
+<_factor> ::= "[" <_expresion> "]" | <_valor> | <_identificador>
+
+<_valor> ::= <_numero> | <_bool> | <_cadena>
+
+<_operador_aritmetico> ::= "+" | "-" | "*" | "/"
+<_operador_relacional> ::= "==" | "!=" | "<" | "<=" | ">" | ">="
+<_operador_logico> ::= "&&" | "||"
+
+<_numero> ::= <_digito> ¿ <_digito> ?
+<_digito> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
+<_bool> ::= "true" | "false"
+
+<_cadena> ::= '"' ¿ <_caracter> ? '"'
+<_caracter> ::= cualquier carácter excepto '"'
+
+<_identificador> ::= "_" <_letra> ¿ <_letra> | <_digito> ?
+<_letra> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j"
+          | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t"
+          | "u" | "v" | "w" | "x" | "y" | "z"
+          | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J"
+          | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T"
+          | "U" | "V" | "W" | "X" | "Y" | "Z"
