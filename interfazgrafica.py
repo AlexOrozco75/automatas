@@ -6,7 +6,7 @@ from tkinter import scrolledtext, filedialog
 # Configuración de la ruta para TCL (ajústala según corresponda)
 os.environ['TCL_LIBRARY'] = r"C:\Users\panda\AppData\Local\Programs\Python\Python313\tcl\tcl8.6"
 
-# Ruta base y carga del archivo JSON con las definiciones de tokens
+# Rutas base y carga del archivo JSON con definiciones de tokens
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_PATH = os.path.join(BASE_DIR, "tabla_contenidos.json")
 
@@ -18,7 +18,7 @@ def cargar_tabla_simbolos():
 
 tabla_simbolos = cargar_tabla_simbolos()
 
-# Extraer listas definidas en el JSON
+# Extraer definiciones desde el JSON
 palabras_reservadas = set(item["token"] for item in tabla_simbolos["palabras_reservadas"])
 operadores = set(
     tabla_simbolos["operadores_aritmeticos"] +
@@ -29,7 +29,7 @@ operadores = set(
 simbolos_puntuacion = set(tabla_simbolos["simbolos_puntuacion"])
 
 
-# Función de tokenización manual (AFD) sin uso de expresiones regulares
+# Función de tokenización manual (AFD) sin uso de librerías de expresiones regulares
 def tokenizar(codigo):
     tokens = []
     i = 0
@@ -39,20 +39,27 @@ def tokenizar(codigo):
         if c.isspace():
             i += 1
             continue
-        # Identificadores y palabras reservadas: inician con letra o guión bajo
+        # Identificadores y palabras reservadas: deben comenzar con letra o '_'
+        # Pero para que sea una variable válida, DEBE comenzar con '_'
         if c.isalpha() or c == '_':
             token = c
             i += 1
             while i < len(codigo) and (codigo[i].isalnum() or codigo[i] == '_'):
                 token += codigo[i]
                 i += 1
+            # Si el token es una palabra reservada, se acepta
             if token in palabras_reservadas:
                 token_type = "PALABRA_RESERVADA"
             else:
-                token_type = "IDENTIFICADOR"
+                # Para ser considerada variable, el token debe iniciar con '_'
+                if token[0] != '_':
+                    token_type = "ERROR"
+                    token = f"Variable no válida (debe comenzar con '_'): {token}"
+                else:
+                    token_type = "IDENTIFICADOR"
             tokens.append((token, token_type))
             continue
-        # Números: enteros o decimales
+        # Números: enteros y decimales
         elif c.isdigit():
             token = c
             i += 1
@@ -73,7 +80,7 @@ def tokenizar(codigo):
                     tokens.append((dos_chars, "OPERADOR"))
                     i += 2
                     continue
-            # Si no es de dos caracteres, se evalúa el carácter actual
+            # Evaluar el carácter individual
             if c in operadores:
                 tokens.append((c, "OPERADOR"))
                 i += 1
@@ -83,21 +90,20 @@ def tokenizar(codigo):
                 i += 1
                 continue
             else:
-                # Si el carácter no coincide con ningún patrón, se marca como error
                 tokens.append((c, "ERROR"))
                 i += 1
     return tokens
 
 
-# Función para resaltar la sintaxis en el área de código usando la tokenización manual
+# Función para resaltar la sintaxis en el widget de código
 def resaltar_sintaxis(event=None):
     txt_codigo.tag_remove("reservada", "1.0", tk.END)
     txt_codigo.tag_remove("operador", "1.0", tk.END)
     txt_codigo.tag_remove("simbolo", "1.0", tk.END)
+    txt_codigo.tag_remove("error", "1.0", tk.END)
 
     codigo = txt_codigo.get("1.0", tk.END)
     tokens = tokenizar(codigo)
-    # Para cada token encontrado, se busca su posición en el widget y se le asigna el color según su tipo.
     for token, tipo in tokens:
         index = txt_codigo.search(token, "1.0", tk.END)
         if index:
@@ -108,9 +114,11 @@ def resaltar_sintaxis(event=None):
                 txt_codigo.tag_add("operador", index, end_index)
             elif tipo == "SIMBOLO":
                 txt_codigo.tag_add("simbolo", index, end_index)
+            elif tipo == "ERROR":
+                txt_codigo.tag_add("error", index, end_index)
 
 
-# Función de compilación: tokeniza el código, clasifica cada token y muestra el resultado y errores
+# Función de compilación: ahora solo reporta errores de definición de variables y otros tokens mal definidos
 def compilar(text_widget):
     txt_errores.config(state="normal")
     txt_errores.delete("1.0", tk.END)
@@ -118,27 +126,22 @@ def compilar(text_widget):
     codigo = text_widget.get("1.0", tk.END)
     tokens = tokenizar(codigo)
     errores = []
-    reconocidos = []
 
     for token, tipo in tokens:
         if tipo == "ERROR":
-            errores.append(f"Token desconocido: {token}")
-        else:
-            reconocidos.append(f"{tipo}: {token}")
+            errores.append(token)
 
     if errores:
+        txt_errores.insert(tk.END, "Errores encontrados:\n")
         for error in errores:
             txt_errores.insert(tk.END, error + "\n")
     else:
-        txt_errores.insert(tk.END, "Compilación exitosa\n")
-
-    if reconocidos:
-        txt_errores.insert(tk.END, "Tokens reconocidos:\n" + "\n".join(reconocidos) + "\n")
+        txt_errores.insert(tk.END, "Compilación exitosa: No se encontraron errores.\n")
 
     txt_errores.config(state="disabled")
 
 
-# Función para cargar un archivo de texto y mostrar su contenido en el editor
+# Función para cargar archivos en el widget de código
 def cargar_archivo(text_widget):
     file_path = filedialog.askopenfilename(
         title="Selecciona un archivo",
@@ -152,7 +155,7 @@ def cargar_archivo(text_widget):
         resaltar_sintaxis()
 
 
-# Configuración de la interfaz gráfica con Tkinter
+# Configuración de la interfaz gráfica (GUI)
 root = tk.Tk()
 root.title("VLAD.io")
 
@@ -167,9 +170,13 @@ lbl_codigo.pack(padx=5, pady=5)
 
 txt_codigo = scrolledtext.ScrolledText(root, width=80, height=20, font=("Consolas", 12))
 txt_codigo.pack(padx=5, pady=5)
+
+# Configuración de etiquetas para el resaltado de sintaxis
 txt_codigo.tag_configure("reservada", foreground="blue")
 txt_codigo.tag_configure("operador", foreground="red")
 txt_codigo.tag_configure("simbolo", foreground="purple")
+txt_codigo.tag_configure("error", foreground="orange")
+
 txt_codigo.bind("<KeyRelease>", resaltar_sintaxis)
 
 btn_compilar = tk.Button(root, text="Compilar", command=lambda: compilar(txt_codigo))
