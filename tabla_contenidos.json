@@ -20,7 +20,9 @@
     { "token": "switch", "original": "switch" },
     { "token": "Opcion", "original": "case" },
     { "token": "default", "original": "default" },
-    { "token": "Clase", "original": "class" }
+    { "token": "Clase", "original": "class" },
+    { "token": "verdad", "original": "true" },
+    { "token": "fake", "original": "false"}
   ],
   "operadores_aritmeticos": [
     "+",
