@@ -10,11 +10,9 @@ os.environ['TCL_LIBRARY'] = r"C:\Users\panda\AppData\Local\Programs\Python\Pytho
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_PATH = os.path.join(BASE_DIR, "tabla_contenidos.json")
 
-
 def cargar_tabla_simbolos():
     with open(JSON_PATH, "r", encoding="utf-8") as archivo:
         return json.load(archivo)
-
 
 tabla_simbolos = cargar_tabla_simbolos()
 
@@ -28,30 +26,24 @@ operadores = set(
 )
 simbolos_puntuacion = set(tabla_simbolos["simbolos_puntuacion"])
 
-
 # Función de tokenización manual (AFD) sin uso de librerías de expresiones regulares
 def tokenizar(codigo):
     tokens = []
     i = 0
     while i < len(codigo):
         c = codigo[i]
-        # Saltar espacios y saltos de línea
         if c.isspace():
             i += 1
             continue
-        # Identificadores y palabras reservadas: deben comenzar con letra o '_'
-        # Pero para que sea una variable válida, DEBE comenzar con '_'
         if c.isalpha() or c == '_':
             token = c
             i += 1
             while i < len(codigo) and (codigo[i].isalnum() or codigo[i] == '_'):
                 token += codigo[i]
                 i += 1
-            # Si el token es una palabra reservada, se acepta
             if token in palabras_reservadas:
                 token_type = "PALABRA_RESERVADA"
             else:
-                # Para ser considerada variable, el token debe iniciar con '_'
                 if token[0] != '_':
                     token_type = "ERROR"
                     token = f"Variable no válida (debe comenzar con '_'): {token}"
@@ -59,7 +51,6 @@ def tokenizar(codigo):
                     token_type = "IDENTIFICADOR"
             tokens.append((token, token_type))
             continue
-        # Números: enteros y decimales
         elif c.isdigit():
             token = c
             i += 1
@@ -71,16 +62,13 @@ def tokenizar(codigo):
                 i += 1
             tokens.append((token, "NUMERO"))
             continue
-        # Operadores y símbolos de puntuación
         else:
-            # Primero se intenta reconocer tokens de dos caracteres (por ejemplo, "==", "<=", "&&", etc.)
             if i + 1 < len(codigo):
                 dos_chars = codigo[i:i + 2]
                 if dos_chars in operadores:
                     tokens.append((dos_chars, "OPERADOR"))
                     i += 2
                     continue
-            # Evaluar el carácter individual
             if c in operadores:
                 tokens.append((c, "OPERADOR"))
                 i += 1
@@ -93,7 +81,6 @@ def tokenizar(codigo):
                 tokens.append((c, "ERROR"))
                 i += 1
     return tokens
-
 
 # Función para resaltar la sintaxis en el widget de código
 def resaltar_sintaxis(event=None):
@@ -117,8 +104,7 @@ def resaltar_sintaxis(event=None):
             elif tipo == "ERROR":
                 txt_codigo.tag_add("error", index, end_index)
 
-
-# Función de compilación: ahora solo reporta errores de definición de variables y otros tokens mal definidos
+# Función de compilación
 def compilar(text_widget):
     txt_errores.config(state="normal")
     txt_errores.delete("1.0", tk.END)
@@ -140,7 +126,6 @@ def compilar(text_widget):
 
     txt_errores.config(state="disabled")
 
-
 # Función para cargar archivos en el widget de código
 def cargar_archivo(text_widget):
     file_path = filedialog.askopenfilename(
@@ -154,21 +139,31 @@ def cargar_archivo(text_widget):
         text_widget.insert(tk.END, contenido)
         resaltar_sintaxis()
 
-
 # Configuración de la interfaz gráfica (GUI)
 root = tk.Tk()
 root.title("VLAD.io")
 
-menu_bar = tk.Menu(root)
-file_menu = tk.Menu(menu_bar, tearoff=0)
-file_menu.add_command(label="Cargar archivo", command=lambda: cargar_archivo(txt_codigo))
-menu_bar.add_cascade(label="Archivo", menu=file_menu)
-root.config(menu=menu_bar)
+# Agregamos un fondo color claro
+root.configure(bg="#f0f0f0")
 
-lbl_codigo = tk.Label(root, text="Código:")
+# Organizar elementos con Frames
+frame_principal = tk.Frame(root, bg="#f0f0f0")
+frame_principal.pack(padx=10, pady=10, fill="both", expand=True)
+
+frame_codigo = tk.Frame(frame_principal, bg="#f0f0f0")
+frame_codigo.pack(fill="both", expand=True)
+
+frame_botones = tk.Frame(frame_principal, bg="#f0f0f0")
+frame_botones.pack(fill="x", pady=5)
+
+frame_errores = tk.Frame(frame_principal, bg="#f0f0f0")
+frame_errores.pack(fill="both", expand=True)
+
+# Agregar elementos dentro de los frames
+lbl_codigo = tk.Label(frame_codigo, text="Código:", bg="#f0f0f0", font=("Arial", 12))
 lbl_codigo.pack(padx=5, pady=5)
 
-txt_codigo = scrolledtext.ScrolledText(root, width=80, height=20, font=("Consolas", 12))
+txt_codigo = scrolledtext.ScrolledText(frame_codigo, width=80, height=20, font=("Consolas", 12), wrap=tk.WORD)
 txt_codigo.pack(padx=5, pady=5)
 
 # Configuración de etiquetas para el resaltado de sintaxis
@@ -179,13 +174,20 @@ txt_codigo.tag_configure("error", foreground="orange")
 
 txt_codigo.bind("<KeyRelease>", resaltar_sintaxis)
 
-btn_compilar = tk.Button(root, text="Compilar", command=lambda: compilar(txt_codigo))
-btn_compilar.pack(padx=5, pady=5)
+btn_compilar = tk.Button(frame_botones, text="Compilar", command=lambda: compilar(txt_codigo), bg="#4CAF50", fg="white", font=("Arial", 10), relief="flat")
+btn_compilar.pack(side="left", padx=5, pady=5)
 
-lbl_errores = tk.Label(root, text="Errores:")
+btn_cargar = tk.Button(frame_botones, text="Cargar archivo", command=lambda: cargar_archivo(txt_codigo), bg="#2196F3", fg="white", font=("Arial", 10), relief="flat")
+btn_cargar.pack(side="left", padx=5, pady=5)
+
+lbl_errores = tk.Label(frame_errores, text="Errores:", bg="#f0f0f0", font=("Arial", 12))
 lbl_errores.pack(padx=5, pady=5)
 
-txt_errores = scrolledtext.ScrolledText(root, width=80, height=10, fg="red", font=("Consolas", 12), state="disabled")
+txt_errores = scrolledtext.ScrolledText(frame_errores, width=80, height=10, fg="red", font=("Consolas", 12), state="disabled", wrap=tk.WORD)
 txt_errores.pack(padx=5, pady=5)
+
+# Agregar una barra de estado
+status_bar = tk.Label(root, text="Listo", anchor="w", bg="#e0e0e0", font=("Arial", 10))
+status_bar.pack(side="bottom", fill="x")
 
 root.mainloop()
