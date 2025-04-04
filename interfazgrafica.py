@@ -26,7 +26,7 @@ operadores = set(
 )
 simbolos_puntuacion = set(tabla_simbolos["simbolos_puntuacion"])
 
-# Función de tokenización manual (AFD) sin uso de librerías de expresiones regulares
+# Función de tokenización manual
 def tokenizar(codigo):
     tokens = []
     i = 0
@@ -82,7 +82,6 @@ def tokenizar(codigo):
                 i += 1
     return tokens
 
-# Función para resaltar la sintaxis en el widget de código
 def resaltar_sintaxis(event=None):
     txt_codigo.tag_remove("reservada", "1.0", tk.END)
     txt_codigo.tag_remove("operador", "1.0", tk.END)
@@ -104,7 +103,6 @@ def resaltar_sintaxis(event=None):
             elif tipo == "ERROR":
                 txt_codigo.tag_add("error", index, end_index)
 
-# Función de compilación
 def compilar(text_widget):
     txt_errores.config(state="normal")
     txt_errores.delete("1.0", tk.END)
@@ -143,51 +141,46 @@ def cargar_archivo(text_widget):
 root = tk.Tk()
 root.title("VLAD.io")
 
-# Agregamos un fondo color claro
-root.configure(bg="#f0f0f0")
+root.configure(bg="#E9F1FA")
 
-# Organizar elementos con Frames
-frame_principal = tk.Frame(root, bg="#f0f0f0")
-frame_principal.pack(padx=10, pady=10, fill="both", expand=True)
+frame_principal = tk.Frame(root, bg="#E9F1FA")
+frame_principal.pack(padx=20, pady=20, fill="both", expand=True)
 
-frame_codigo = tk.Frame(frame_principal, bg="#f0f0f0")
+frame_codigo = tk.Frame(frame_principal, bg="#E9F1FA")
 frame_codigo.pack(fill="both", expand=True)
 
-frame_botones = tk.Frame(frame_principal, bg="#f0f0f0")
-frame_botones.pack(fill="x", pady=5)
+frame_botones = tk.Frame(frame_principal, bg="#E9F1FA")
+frame_botones.pack(fill="x", pady=10)
 
-frame_errores = tk.Frame(frame_principal, bg="#f0f0f0")
+frame_errores = tk.Frame(frame_principal, bg="#E9F1FA")
 frame_errores.pack(fill="both", expand=True)
 
-# Agregar elementos dentro de los frames
-lbl_codigo = tk.Label(frame_codigo, text="Código:", bg="#f0f0f0", font=("Arial", 12))
+lbl_codigo = tk.Label(frame_codigo, text="Código:", bg="#E9F1FA", font=("Arial", 14, "bold"), fg="#005A8D")
 lbl_codigo.pack(padx=5, pady=5)
 
 txt_codigo = scrolledtext.ScrolledText(frame_codigo, width=80, height=20, font=("Consolas", 12), wrap=tk.WORD)
 txt_codigo.pack(padx=5, pady=5)
 
-# Configuración de etiquetas para el resaltado de sintaxis
-txt_codigo.tag_configure("reservada", foreground="blue")
-txt_codigo.tag_configure("operador", foreground="red")
-txt_codigo.tag_configure("simbolo", foreground="purple")
-txt_codigo.tag_configure("error", foreground="orange")
+txt_codigo.tag_configure("reservada", foreground="#1F4B99")  
+txt_codigo.tag_configure("operador", foreground="#D24D57")  
+txt_codigo.tag_configure("simbolo", foreground="#5F6368")  
+txt_codigo.tag_configure("error", foreground="#D9534F")  
 
 txt_codigo.bind("<KeyRelease>", resaltar_sintaxis)
 
-btn_compilar = tk.Button(frame_botones, text="Compilar", command=lambda: compilar(txt_codigo), bg="#4CAF50", fg="white", font=("Arial", 10), relief="flat")
-btn_compilar.pack(side="left", padx=5, pady=5)
+btn_compilar = tk.Button(frame_botones, text="Compilar", command=lambda: compilar(txt_codigo), bg="#0066CC", fg="white", font=("Arial", 12), relief="flat", padx=15, pady=5)
+btn_compilar.pack(side="left", padx=10, pady=5)
 
-btn_cargar = tk.Button(frame_botones, text="Cargar archivo", command=lambda: cargar_archivo(txt_codigo), bg="#2196F3", fg="white", font=("Arial", 10), relief="flat")
-btn_cargar.pack(side="left", padx=5, pady=5)
+btn_cargar = tk.Button(frame_botones, text="Cargar archivo", command=lambda: cargar_archivo(txt_codigo), bg="#007BFF", fg="white", font=("Arial", 12), relief="flat", padx=15, pady=5)
+btn_cargar.pack(side="left", padx=10, pady=5)
 
-lbl_errores = tk.Label(frame_errores, text="Errores:", bg="#f0f0f0", font=("Arial", 12))
+lbl_errores = tk.Label(frame_errores, text="Errores:", bg="#E9F1FA", font=("Arial", 14, "bold"), fg="#005A8D")
 lbl_errores.pack(padx=5, pady=5)
 
-txt_errores = scrolledtext.ScrolledText(frame_errores, width=80, height=10, fg="red", font=("Consolas", 12), state="disabled", wrap=tk.WORD)
+txt_errores = scrolledtext.ScrolledText(frame_errores, width=80, height=10, fg="#D9534F", font=("Consolas", 12), state="disabled", wrap=tk.WORD)
 txt_errores.pack(padx=5, pady=5)
 
-# Agregar una barra de estado
-status_bar = tk.Label(root, text="Listo", anchor="w", bg="#e0e0e0", font=("Arial", 10))
+status_bar = tk.Label(root, text="Listo", anchor="w", bg="#007BFF", fg="white", font=("Arial", 10))
 status_bar.pack(side="bottom", fill="x")
 
 root.mainloop()
