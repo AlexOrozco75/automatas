@@ -93,32 +93,26 @@ def load_tabla_simbolos():
     return symbols
 
 
-# Inicializar la tabla de símbolos (crear/limpiar el archivo)
 init_tabla_simbolos_file()
 
 
-# --- AFD de tokenización manual (sin usar re) ---
 def tokenizar(codigo):
     tokens = []
     i = 0
     while i < len(codigo):
         c = codigo[i]
-        # Saltar espacios y saltos de línea
         if c.isspace():
             i += 1
             continue
-        # Identificadores y palabras reservadas: deben comenzar con letra o '_'
         if c.isalpha() or c == '_':
             token = c
             i += 1
             while i < len(codigo) and (codigo[i].isalnum() or codigo[i] == '_'):
                 token += codigo[i]
                 i += 1
-            # Si es palabra reservada, se acepta directamente
             if token in palabras_reservadas:
                 token_type = "PALABRA_RESERVADA"
             else:
-                # Para ser una variable válida, debe comenzar con '_'
                 if token[0] != '_':
                     token_type = "ERROR"
                     token = f"Variable no válida (debe comenzar con '_'): {token}"
@@ -126,7 +120,6 @@ def tokenizar(codigo):
                     token_type = "IDENTIFICADOR"
             tokens.append((token, token_type))
             continue
-        # Números: enteros y decimales
         elif c.isdigit():
             token = c
             i += 1
@@ -138,7 +131,6 @@ def tokenizar(codigo):
                 i += 1
             tokens.append((token, "NUMERO"))
             continue
-        # Operadores y símbolos de puntuación
         else:
             if i + 1 < len(codigo):
                 dos_chars = codigo[i:i + 2]
@@ -195,7 +187,6 @@ def compilar(text_widget):
     for token, tipo in tokens:
         if tipo == "ERROR":
             errores.append(token)
-        # Si el token es un identificador o número válido, se guarda en la tabla de símbolos.
         elif tipo in ("IDENTIFICADOR", "NUMERO"):
             add_symbol(token, tipo)
 
@@ -223,7 +214,6 @@ def cargar_archivo(text_widget):
 
 
 def mostrar_tabla_simbolos():
-    # Función para leer la tabla de símbolos y mostrarla en una nueva ventana
     symbols = load_tabla_simbolos()
     ventana = tk.Toplevel(root)
     ventana.title("Tabla de Símbolos")
@@ -236,37 +226,70 @@ def mostrar_tabla_simbolos():
         txt_tabla.insert(tk.END, "La tabla de símbolos está vacía.")
 
 
-# Configuración de la interfaz gráfica (GUI)
+# Configuración de la interfaz gráfica (GUI) - Versión moderna
 root = tk.Tk()
 root.title("VLAD.io")
+root.geometry("900x700")
+root.configure(bg="#2e2e2e")  
 
-menu_bar = tk.Menu(root)
-file_menu = tk.Menu(menu_bar, tearoff=0)
+# Fuentes y colores modernos
+fuente_general = ("Segoe UI", 11)
+color_fondo = "#2e2e2e"
+color_texto = "#ffffff"
+color_boton = "#444"
+color_boton_hover = "#666"
+color_input_bg = "#1e1e1e"
+
+def estilo_boton(btn):
+    btn.configure(
+        bg=color_boton,
+        fg="white",
+        activebackground=color_boton_hover,
+        relief="flat",
+        font=fuente_general,
+        padx=10,
+        pady=5,
+        cursor="hand2"
+    )
+
+# Menú superior
+menu_bar = tk.Menu(root, bg=color_boton, fg="white", activebackground=color_boton_hover, font=fuente_general)
+file_menu = tk.Menu(menu_bar, tearoff=0, bg=color_boton, fg="white", activebackground=color_boton_hover, font=fuente_general)
 file_menu.add_command(label="Cargar archivo", command=lambda: cargar_archivo(txt_codigo))
 menu_bar.add_cascade(label="Archivo", menu=file_menu)
 root.config(menu=menu_bar)
 
-lbl_codigo = tk.Label(root, text="Código:")
-lbl_codigo.pack(padx=5, pady=5)
+# Label
+lbl_codigo = tk.Label(root, text="Código:", font=fuente_general, bg=color_fondo, fg=color_texto)
+lbl_codigo.pack(padx=5, pady=(10, 2))
 
-txt_codigo = scrolledtext.ScrolledText(root, width=80, height=20, font=("Consolas", 12))
-txt_codigo.pack(padx=5, pady=5)
-txt_codigo.tag_configure("reservada", foreground="blue")
-txt_codigo.tag_configure("operador", foreground="red")
-txt_codigo.tag_configure("simbolo", foreground="purple")
-txt_codigo.tag_configure("error", foreground="orange")
+# Código fuente
+txt_codigo = scrolledtext.ScrolledText(root, width=100, height=20, font=("Consolas", 12), bg=color_input_bg, fg=color_texto, insertbackground="white")
+txt_codigo.pack(padx=10, pady=5)
+txt_codigo.tag_configure("reservada", foreground="#569CD6")  # Azul
+txt_codigo.tag_configure("operador", foreground="#D16969")  # Rojo
+txt_codigo.tag_configure("simbolo", foreground="#C586C0")   # Violeta
+txt_codigo.tag_configure("error", foreground="#D7BA7D")     # Naranja
 txt_codigo.bind("<KeyRelease>", resaltar_sintaxis)
 
-btn_compilar = tk.Button(root, text="Compilar", command=lambda: compilar(txt_codigo))
-btn_compilar.pack(padx=5, pady=5)
+# Botones
+frame_botones = tk.Frame(root, bg=color_fondo)
+frame_botones.pack(pady=10)
 
-btn_ver_tabla = tk.Button(root, text="Ver Tabla de Símbolos", command=mostrar_tabla_simbolos)
-btn_ver_tabla.pack(padx=5, pady=5)
+btn_compilar = tk.Button(frame_botones, text="Compilar", command=lambda: compilar(txt_codigo))
+btn_ver_tabla = tk.Button(frame_botones, text="Ver Tabla de Símbolos", command=mostrar_tabla_simbolos)
 
-lbl_errores = tk.Label(root, text="Errores:")
-lbl_errores.pack(padx=5, pady=5)
+estilo_boton(btn_compilar)
+estilo_boton(btn_ver_tabla)
 
-txt_errores = scrolledtext.ScrolledText(root, width=80, height=10, fg="red", font=("Consolas", 12), state="disabled")
-txt_errores.pack(padx=5, pady=5)
+btn_compilar.grid(row=0, column=0, padx=10)
+btn_ver_tabla.grid(row=0, column=1, padx=10)
+
+# Errores
+lbl_errores = tk.Label(root, text="Errores:", font=fuente_general, bg=color_fondo, fg=color_texto)
+lbl_errores.pack(padx=5, pady=(10, 2))
+
+txt_errores = scrolledtext.ScrolledText(root, width=100, height=10, font=("Consolas", 12), bg=color_input_bg, fg="#ff4c4c", insertbackground="white", state="disabled")
+txt_errores.pack(padx=10, pady=5)
 
 root.mainloop()
